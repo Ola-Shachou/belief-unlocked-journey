@@ -97,6 +97,61 @@ export interface SessionData {
   summaryTitle: string;
 }
 
+// Expanded list of emotions with descriptions
+export const emotionsList = [
+  { name: "Admiration", description: "Feeling of respect and warm approval." },
+  { name: "Adoration", description: "Deep love and respect." },
+  { name: "Aesthetic Appreciation", description: "Admiration of beauty or artistic qualities." },
+  { name: "Amusement", description: "Finding something funny or entertaining." },
+  { name: "Anger", description: "Strong feeling of displeasure, hostility or antagonism." },
+  { name: "Anxiety", description: "Feeling of worry, nervousness, or unease about something with an uncertain outcome." },
+  { name: "Awe", description: "Feeling of reverential respect mixed with fear or wonder." },
+  { name: "Awkwardness", description: "Feeling uncomfortable, self-conscious, or embarrassed." },
+  { name: "Boredom", description: "Feeling weary because one is unoccupied or lacks interest." },
+  { name: "Calmness", description: "State of tranquility, free from disturbance or agitation." },
+  { name: "Confusion", description: "Feeling bewildered or unable to think clearly." },
+  { name: "Craving", description: "Powerful desire for something." },
+  { name: "Disgust", description: "Strong feeling of revulsion or profound disapproval." },
+  { name: "Empathetic Pain", description: "Feeling hurt or suffering because of another's pain." },
+  { name: "Entrancement", description: "State of being captivated or delighted." },
+  { name: "Envy", description: "Feeling of discontented or resentful longing aroused by someone else's possessions, qualities, or luck." },
+  { name: "Excitement", description: "Feeling of great enthusiasm and eagerness." },
+  { name: "Fear", description: "Unpleasant emotion caused by the belief that someone or something is dangerous or a threat." },
+  { name: "Frustration", description: "Feeling upset or annoyed as a result of being unable to change or achieve something." },
+  { name: "Guilt", description: "Feeling of having done wrong or failed in an obligation." },
+  { name: "Horror", description: "Intense feeling of fear, shock, or disgust." },
+  { name: "Interest", description: "Feeling of wanting to know or learn about something." },
+  { name: "Joy", description: "Feeling of great pleasure and happiness." },
+  { name: "Loneliness", description: "Sadness because one has no friends or company." },
+  { name: "Nostalgia", description: "Sentimental longing for a period in the past." },
+  { name: "Overwhelm", description: "Feeling buried or drowning under a huge weight of emotions or tasks." },
+  { name: "Resentment", description: "Bitter indignation at having been treated unfairly." },
+  { name: "Romance", description: "Feeling of excitement and mystery associated with love." },
+  { name: "Sadness", description: "Feeling unhappy or showing sorrow; affected by grief." },
+  { name: "Satisfaction", description: "Fulfillment of one's wishes, expectations, or needs." },
+  { name: "Shame", description: "Painful feeling of humiliation or distress caused by the consciousness of wrong or foolish behavior." },
+  { name: "Sexual Desire", description: "Strong physical and emotional attraction towards another person." },
+  { name: "Sympathy", description: "Feelings of pity and sorrow for someone else's misfortune." },
+  { name: "Triumph", description: "Great satisfaction and elation resulting from a success or victory." }
+];
+
+// Extended body location suggestions with more detail
+export const bodyLocationsList = [
+  { name: "Chest/Heart area", description: "Center of emotional feelings, often associated with love, grief, or anxiety" },
+  { name: "Stomach/Gut", description: "Often referred to as our 'second brain', associated with intuition and basic emotions" },
+  { name: "Throat", description: "Related to expression, communication, and speaking your truth" },
+  { name: "Head/Temples", description: "Associated with thoughts, beliefs, and overthinking" },
+  { name: "Shoulders/Upper back", description: "Common place to hold stress, responsibility, and burden" },
+  { name: "Jaw/Face", description: "Often holds tension related to unexpressed words or emotions" },
+  { name: "Hands", description: "Connected to our ability to create, give, and receive" },
+  { name: "Legs", description: "Related to support, movement forward, and stability" },
+  { name: "Around the body", description: "Energy or sensation felt outside the physical body" },
+  { name: "Lower back", description: "Often associated with feeling unsupported or financial stress" },
+  { name: "Neck", description: "Flexibility, stubbornness, or resistance to change" },
+  { name: "Eyes", description: "Related to how we see ourselves and the world" },
+  { name: "Entire body", description: "Full-body sensations that cannot be localized" }
+];
+
 export function generateSummaryTitle(answers: {[key: number]: string | number}): string {
   // If there's an answer to question 11 (title), use that
   if (answers[11] && typeof answers[11] === 'string') {
