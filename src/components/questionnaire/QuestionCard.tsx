@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Question, emotionsList, bodyLocationsList } from "@/data/questionnaireData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { HelpCircleIcon, BodyIcon, HeartIcon, LayersIcon, DropletIcon, AlertCircleIcon } from "lucide-react";
+import { HelpCircleIcon, UserIcon, HeartIcon, LayersIcon, DropletIcon, AlertCircleIcon } from "lucide-react";
 
 interface QuestionCardProps {
   question: Question;
@@ -200,7 +199,7 @@ export function QuestionCard({
                     )}
                     {attr.texture && (
                       <div className="flex items-start gap-2">
-                        <BodyIcon className="h-4 w-4 text-belief-purple mt-0.5 shrink-0" />
+                        <UserIcon className="h-4 w-4 text-belief-purple mt-0.5 shrink-0" />
                         <div>
                           <span className="font-medium block">Texture:</span>
                           <span className="text-muted-foreground">{attr.texture}</span>
@@ -237,7 +236,7 @@ export function QuestionCard({
                 <span className="font-medium flex items-center">
                   {q.id === 1 && <AlertCircleIcon className="h-3 w-3 mr-1" />}
                   {q.id === 2 && <HeartIcon className="h-3 w-3 mr-1" />}
-                  {q.id === 3 && <BodyIcon className="h-3 w-3 mr-1" />}
+                  {q.id === 3 && <UserIcon className="h-3 w-3 mr-1" />}
                   {q.text}
                 </span>
                 <p className="text-muted-foreground ml-4">{q.answer as string}</p>
@@ -320,7 +319,7 @@ export function QuestionCard({
           
           <div>
             <div className="text-sm font-medium text-muted-foreground mb-2 flex items-center">
-              <BodyIcon className="h-4 w-4 mr-2" />
+              <UserIcon className="h-4 w-4 mr-2" />
               Common locations:
             </div>
             <div className="flex flex-wrap gap-2">
@@ -353,7 +352,7 @@ export function QuestionCard({
       return (
         <div className="mt-4">
           <div className="text-sm font-medium text-muted-foreground mb-2 flex items-center">
-            <BodyIcon className="h-4 w-4 mr-2" />
+            <UserIcon className="h-4 w-4 mr-2" />
             Texture ideas:
           </div>
           <div className="flex flex-wrap gap-2">
