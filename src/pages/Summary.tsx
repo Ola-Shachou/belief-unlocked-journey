@@ -86,6 +86,16 @@ const Summary = () => {
       })
     : 'Unknown date';
 
+  // Group questions for the summary display
+  const getSummarySection = (title: string, content: React.ReactNode) => (
+    <div className="pb-4 mb-4 border-b border-muted last:border-0">
+      <h3 className="font-medium text-belief-purple mb-2">{title}</h3>
+      <div className="pl-4 border-l-2 border-belief-lightpurple">
+        {content}
+      </div>
+    </div>
+  );
+
   return (
     <div className="container py-8 animate-enter">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -101,32 +111,79 @@ const Summary = () => {
           <CardHeader className="bg-belief-lightpurple rounded-t-xl">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-2xl text-belief-purple">Limiting Belief Analysis</CardTitle>
+                <CardTitle className="text-2xl text-belief-purple">Belief Exploration Summary</CardTitle>
                 <CardDescription className="mt-1 text-belief-purple/80">
-                  Understanding your limiting belief and its impact
+                  Understanding your challenge and how you experience it
                 </CardDescription>
               </div>
               <BookmarkIcon className="h-6 w-6 text-belief-purple" />
             </div>
           </CardHeader>
           <CardContent className="pt-6 pb-2 space-y-6">
-            {questions.map((question) => (
-              <div key={question.id} className="pb-4 border-b border-muted last:border-0">
-                <h3 className="font-medium text-belief-purple mb-1">{question.text}</h3>
-                <div className="pl-4 border-l-2 border-belief-lightpurple">
-                  {question.type === 'scale' ? (
-                    <div className="flex items-center mt-2">
-                      <div className="bg-belief-lightpurple text-belief-purple font-medium rounded-full h-8 w-8 flex items-center justify-center">
-                        {session.answers[question.id]}
-                      </div>
-                      <span className="ml-2 text-sm text-muted-foreground">out of 10</span>
-                    </div>
-                  ) : (
-                    <p className="py-1">{session.answers[question.id] as string}</p>
-                  )}
+            {/* Main difficulty */}
+            {getSummarySection(
+              "The challenge you're currently facing:",
+              <p className="py-1 font-medium">{session.answers[1] as string}</p>
+            )}
+            
+            {/* Emotions */}
+            {getSummarySection(
+              "The emotions associated with this challenge:",
+              <p className="py-1">{session.answers[2] as string}</p>
+            )}
+            
+            {/* Body location */}
+            {getSummarySection(
+              "Where you physically experience these emotions:",
+              <p className="py-1">{session.answers[3] as string}</p>
+            )}
+            
+            {/* Visual representation */}
+            <div className="pb-4 mb-4 border-b border-muted">
+              <h3 className="font-medium text-belief-purple mb-2">How you visualize this challenge:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-belief-lightpurple">
+                {/* Shape */}
+                <div>
+                  <p className="text-sm text-muted-foreground">Shape:</p>
+                  <p>{session.answers[4] as string}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Dimensionality:</p>
+                  <p>{session.answers[7] as string}</p>
+                </div>
+                
+                {/* Colors and textures */}
+                <div>
+                  <p className="text-sm text-muted-foreground">Color:</p>
+                  <p>{session.answers[5] as string}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Texture:</p>
+                  <p>{session.answers[6] as string}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Background color:</p>
+                  <p>{session.answers[8] as string}</p>
                 </div>
               </div>
-            ))}
+            </div>
+            
+            {/* Intensity */}
+            {getSummarySection(
+              "Intensity of emotional response:",
+              <div className="flex items-center mt-2">
+                <div className="bg-belief-lightpurple text-belief-purple font-medium rounded-full h-8 w-8 flex items-center justify-center">
+                  {session.answers[9]}
+                </div>
+                <span className="ml-2 text-sm text-muted-foreground">out of 10</span>
+              </div>
+            )}
+            
+            {/* Memory */}
+            {getSummarySection(
+              "Your earliest memory of this experience:",
+              <p className="py-1">{session.answers[10] as string}</p>
+            )}
+            
+            {/* Title */}
+            {getSummarySection(
+              "How you've titled this experience:",
+              <p className="py-1 font-semibold text-belief-purple">{session.answers[11] as string}</p>
+            )}
           </CardContent>
           <CardFooter className="pt-2 pb-6 flex justify-center">
             <Link to="/questionnaire">
