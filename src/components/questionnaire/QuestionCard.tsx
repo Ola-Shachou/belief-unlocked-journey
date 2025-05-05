@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Question } from "@/data/questionnaireData";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,17 +25,40 @@ interface QuestionCardProps {
   isLast: boolean;
 }
 
-// Common emotions with descriptions for assistance
+// Expanded emotions with descriptions for assistance
 const emotionSuggestions = [
-  { name: "Anger", description: "A strong feeling of displeasure, hostility or antagonism towards someone or something." },
-  { name: "Fear", description: "An unpleasant emotion caused by the belief that someone or something is dangerous or a threat." },
-  { name: "Sadness", description: "Feeling unhappy or showing sorrow; affected by grief." },
-  { name: "Shame", description: "A painful feeling of humiliation or distress caused by the consciousness of wrong or foolish behavior." },
-  { name: "Guilt", description: "A feeling of having done wrong or failed in an obligation." },
-  { name: "Anxiety", description: "A feeling of worry, nervousness, or unease about something with an uncertain outcome." },
-  { name: "Frustration", description: "The feeling of being upset or annoyed as a result of being unable to change or achieve something." },
-  { name: "Disappointment", description: "Sadness or displeasure caused by the non-fulfillment of one's hopes or expectations." },
+  { name: "Admiration", description: "Feeling of respect and warm approval." },
+  { name: "Adoration", description: "Deep love and respect." },
+  { name: "Aesthetic Appreciation", description: "Admiration of beauty or artistic qualities." },
+  { name: "Amusement", description: "Finding something funny or entertaining." },
+  { name: "Anger", description: "Strong feeling of displeasure, hostility or antagonism." },
+  { name: "Anxiety", description: "Feeling of worry, nervousness, or unease about something with an uncertain outcome." },
+  { name: "Awe", description: "Feeling of reverential respect mixed with fear or wonder." },
+  { name: "Awkwardness", description: "Feeling uncomfortable, self-conscious, or embarrassed." },
+  { name: "Boredom", description: "Feeling weary because one is unoccupied or lacks interest." },
+  { name: "Calmness", description: "State of tranquility, free from disturbance or agitation." },
+  { name: "Confusion", description: "Feeling bewildered or unable to think clearly." },
+  { name: "Craving", description: "Powerful desire for something." },
+  { name: "Disgust", description: "Strong feeling of revulsion or profound disapproval." },
+  { name: "Empathetic Pain", description: "Feeling hurt or suffering because of another's pain." },
+  { name: "Entrancement", description: "State of being captivated or delighted." },
+  { name: "Envy", description: "Feeling of discontented or resentful longing aroused by someone else's possessions, qualities, or luck." },
+  { name: "Excitement", description: "Feeling of great enthusiasm and eagerness." },
+  { name: "Fear", description: "Unpleasant emotion caused by the belief that someone or something is dangerous or a threat." },
+  { name: "Frustration", description: "Feeling upset or annoyed as a result of being unable to change or achieve something." },
+  { name: "Guilt", description: "Feeling of having done wrong or failed in an obligation." },
+  { name: "Horror", description: "Intense feeling of fear, shock, or disgust." },
+  { name: "Interest", description: "Feeling of wanting to know or learn about something." },
+  { name: "Joy", description: "Feeling of great pleasure and happiness." },
+  { name: "Nostalgia", description: "Sentimental longing for a period in the past." },
   { name: "Resentment", description: "Bitter indignation at having been treated unfairly." },
+  { name: "Romance", description: "Feeling of excitement and mystery associated with love." },
+  { name: "Sadness", description: "Feeling unhappy or showing sorrow; affected by grief." },
+  { name: "Satisfaction", description: "Fulfillment of one's wishes, expectations, or needs." },
+  { name: "Shame", description: "Painful feeling of humiliation or distress caused by the consciousness of wrong or foolish behavior." },
+  { name: "Sexual Desire", description: "Strong physical and emotional attraction towards another person." },
+  { name: "Sympathy", description: "Feelings of pity and sorrow for someone else's misfortune." },
+  { name: "Triumph", description: "Great satisfaction and elation resulting from a success or victory." },
   { name: "Overwhelm", description: "To have a strong emotional effect on; to cause to feel sudden strong emotion." }
 ];
 
@@ -78,8 +101,19 @@ export function QuestionCard({
 
   // State for the current answer
   const [answer, setAnswer] = useState<string | number>(
-    previousAnswers[question.id] !== undefined ? previousAnswers[question.id] : (question.type === 'scale' ? 5 : '')
+    question.type === 'scale' ? 5 : ''
   );
+  
+  // Reset the answer field when question changes
+  useEffect(() => {
+    // Check if this question already has an answer
+    if (previousAnswers[question.id] !== undefined) {
+      setAnswer(previousAnswers[question.id]);
+    } else {
+      // Reset to default value if no previous answer
+      setAnswer(question.type === 'scale' ? 5 : '');
+    }
+  }, [question.id, previousAnswers]);
 
   // Handler for submitting the answer and moving to the next question
   const handleNext = () => {
@@ -111,13 +145,63 @@ export function QuestionCard({
     }
   };
 
+  // Render section for referencing previous answers
+  const renderPreviousAnswersSection = () => {
+    if (question.id <= 1) return null;
+
+    const relevantPreviousQuestions = [];
+    
+    // Always show the main problem (question 1)
+    if (question.id !== 1 && previousAnswers[1]) {
+      relevantPreviousQuestions.push({
+        id: 1,
+        text: "Your current challenge:",
+        answer: previousAnswers[1]
+      });
+    }
+    
+    // Show emotions for shape/color/texture questions
+    if ((question.type === 'shape' || question.type === 'color' || question.type === 'texture') && previousAnswers[2]) {
+      relevantPreviousQuestions.push({
+        id: 2,
+        text: "Associated emotions:",
+        answer: previousAnswers[2]
+      });
+    }
+    
+    // Show body locations for shape/color/texture questions
+    if ((question.type === 'shape' || question.type === 'color' || question.type === 'texture') && previousAnswers[3]) {
+      relevantPreviousQuestions.push({
+        id: 3,
+        text: "Body locations:",
+        answer: previousAnswers[3]
+      });
+    }
+    
+    if (relevantPreviousQuestions.length === 0) return null;
+    
+    return (
+      <div className="mt-4 p-3 bg-belief-lightpurple/20 rounded-md">
+        <h4 className="text-sm font-medium mb-2 text-belief-purple">Reference Information:</h4>
+        <div className="space-y-2">
+          {relevantPreviousQuestions.map(q => (
+            <div key={q.id} className="text-sm">
+              <span className="font-medium">{q.text}</span>
+              <p className="text-muted-foreground">{q.answer as string}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Render suggestions for certain question types
   const renderSuggestions = () => {
     if (question.type === 'emotion') {
       return (
         <div className="mt-4">
           <div className="text-sm font-medium text-muted-foreground mb-2">Suggestions:</div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pb-2">
             {emotionSuggestions.map((emotion) => (
               <TooltipProvider key={emotion.name}>
                 <Tooltip>
@@ -132,8 +216,8 @@ export function QuestionCard({
                       {emotion.name}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">{emotion.description}</p>
+                  <TooltipContent className="max-w-[250px]">
+                    <p>{emotion.description}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -195,6 +279,8 @@ export function QuestionCard({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
+        {renderPreviousAnswersSection()}
+        
         {/* Text input for most questions */}
         {(question.type === 'text' || question.type === 'emotion' || 
           question.type === 'shape' || question.type === 'texture' || 

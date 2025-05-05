@@ -1,3 +1,4 @@
+
 export interface Question {
   id: number;
   text: string;
@@ -20,35 +21,35 @@ export const questions: Question[] = [
     text: "What negative emotions are associated with this?",
     type: "emotion",
     placeholder: "e.g., shame, fear, sadness, anger...",
-    description: "List all the emotions you feel when thinking about your previous answer."
+    description: "List all the emotions you feel when thinking about your previous answer. Click on suggestions below for ideas."
   },
   {
     id: 3,
     text: "Where do you physically experience these emotions in your body?",
     type: "bodyLocation",
     placeholder: "e.g., chest tightness, stomach knots, shoulder tension...",
-    description: "Notice where in your body you feel sensations when these emotions arise."
+    description: "Notice where in your body you feel sensations when these emotions arise. You can list multiple locations."
   },
   {
     id: 4,
     text: "Please describe the shape or form of 'it'.",
     type: "shape",
     placeholder: "e.g., spiral, knot, cloud, sharp edges...",
-    description: "There are no wrong answers - describe what you intuitively sense."
+    description: "For each body location you identified, describe what shape or form your difficulty takes there."
   },
   {
     id: 5,
     text: "What color(s) is it?",
     type: "color",
     placeholder: "e.g., dark blue, fiery red, murky green...",
-    description: "What colors come to mind when you think about this difficulty?"
+    description: "For each shape you described, what colors do you associate with it?"
   },
   {
     id: 6,
     text: "What texture(s) can you see or feel when you think about it?",
     type: "texture",
     placeholder: "e.g., rough, sticky, sharp, heavy...",
-    description: "How would it feel if you could touch this difficulty?"
+    description: "How would the shapes you described feel if you could touch them? Consider each location separately."
   },
   {
     id: 7,
