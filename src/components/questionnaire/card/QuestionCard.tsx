@@ -11,6 +11,7 @@ import { BodyLocationSuggestions } from "./BodyLocationSuggestions";
 import { TextureSuggestions } from "./TextureSuggestions";
 import { ShapeColorHint } from "./ShapeColorHint";
 import { emotionsList } from "@/data/questionnaireData";
+import { InfoIcon } from "lucide-react";
 
 interface QuestionCardProps {
   question: Question;
@@ -46,6 +47,17 @@ export function QuestionCard({
   
   // State to track if the current input appears to be an emotion
   const [showEmotionHelp, setShowEmotionHelp] = useState<boolean>(false);
+
+  // Real-time tracking of all answers including current draft
+  const [liveAnswers, setLiveAnswers] = useState<{[key: number]: string | number}>(previousAnswers);
+
+  // Update liveAnswers whenever answer or previousAnswers change
+  useEffect(() => {
+    setLiveAnswers({
+      ...previousAnswers,
+      [question.id]: answer
+    });
+  }, [answer, previousAnswers, question.id]);
   
   // Reset the answer field when question changes
   useEffect(() => {
@@ -85,7 +97,19 @@ export function QuestionCard({
   // Helper function to determine if string might be an emotion
   const mightBeEmotion = (input: string): boolean => {
     const lowerInput = input.toLowerCase();
-    // Check if the input contains any common emotion-related terms
+    
+    // Check for colon format (body part: emotion)
+    if (input.includes(':')) {
+      const parts = input.split(':');
+      if (parts.length >= 2 && parts[1].trim()) {
+        // Check the part after the colon for emotions
+        return emotionsList.some(emotion => 
+          parts[1].toLowerCase().includes(emotion.name.toLowerCase())
+        );
+      }
+    }
+    
+    // Regular check
     return emotionsList.some(emotion => 
       lowerInput.includes(emotion.name.toLowerCase())
     );
@@ -93,24 +117,21 @@ export function QuestionCard({
 
   // Handler for emotion suggestions
   const handleSuggestionClick = (suggestion: string) => {
-    if (typeof answer === 'string') {
-      // Add the suggestion to the current answer
-      const currentAnswers = answer.split(',').map(a => a.trim()).filter(a => a);
-      if (!currentAnswers.includes(suggestion)) {
-        const newAnswer = currentAnswers.length > 0 
-          ? `${answer.trim()}, ${suggestion}` 
-          : suggestion;
-        setAnswer(newAnswer);
-      }
-    } else {
-      setAnswer(suggestion);
-    }
+    setAnswer(suggestion);
   };
 
   // Function to extract body locations from the answer to question 3
   const getBodyLocations = (): string[] => {
     if (!previousAnswers[3] || typeof previousAnswers[3] !== 'string') return [];
     return previousAnswers[3].split(',').map(location => location.trim()).filter(Boolean);
+  };
+
+  // Handler for formatting input with body part: emotion format
+  const handleBodyLocationClick = (location: string) => {
+    if (typeof answer !== 'string') return;
+    
+    // Format as "location: " to encourage proper format
+    setAnswer(`${location}: `);
   };
 
   // Render suggestions for certain question types
@@ -148,6 +169,13 @@ export function QuestionCard({
     return null;
   };
 
+  // Determine if the user is on a question that benefits from showing the format hint
+  const showFormatHint = question.id > 3 && (
+    question.type === 'shape' || 
+    question.type === 'color' || 
+    question.type === 'texture'
+  );
+
   return (
     <Card className="w-full max-w-xl mx-auto animate-enter">
       <CardHeader>
@@ -160,8 +188,19 @@ export function QuestionCard({
       <CardContent className="space-y-4">
         <PreviousAnswersSection 
           questionId={question.id} 
-          previousAnswers={previousAnswers} 
+          previousAnswers={liveAnswers} 
         />
+        
+        {showFormatHint && (
+          <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-100 rounded-md mb-4">
+            <InfoIcon className="h-5 w-5 text-blue-500 mt-0.5" />
+            <div className="text-sm text-blue-700">
+              <p className="font-medium">How to format your answer:</p>
+              <p>Use <strong>body part: description</strong> format to be specific about each body location.</p>
+              <p className="mt-1 italic text-blue-600">Example: "Throat: tight, constricted"</p>
+            </div>
+          </div>
+        )}
         
         {/* Text input for most questions */}
         {(question.type === 'text' || question.type === 'emotion' || 

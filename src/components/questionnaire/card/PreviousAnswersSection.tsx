@@ -21,10 +21,51 @@ interface PreviousAnswersSectionProps {
   previousAnswers: {[key: number]: string | number};
 }
 
+// Helper function to parse "body part: description" format
+const parseBodySpecificFormat = (text: string): { location: string, description: string }[] => {
+  if (!text || typeof text !== 'string') return [];
+  
+  // Split by commas outside of "location: description" pairs
+  const result: { location: string, description: string }[] = [];
+  
+  // Check if the format includes colons
+  if (text.includes(':')) {
+    // Complex parsing for "location: description" format
+    const lines = text.split('\n');
+    
+    for (const line of lines) {
+      const colonIndex = line.indexOf(':');
+      
+      if (colonIndex !== -1) {
+        const location = line.substring(0, colonIndex).trim();
+        const description = line.substring(colonIndex + 1).trim();
+        
+        if (location && description) {
+          result.push({ location, description });
+        }
+      } else if (line.trim()) {
+        // Line without colon - treat as a general description
+        result.push({ location: 'General', description: line.trim() });
+      }
+    }
+    
+    // If nothing was parsed properly but there was text, add as general
+    if (result.length === 0 && text.trim()) {
+      result.push({ location: 'General', description: text.trim() });
+    }
+  } else {
+    // Simple format - treat as general
+    result.push({ location: 'General', description: text.trim() });
+  }
+  
+  return result;
+};
+
 // Helper functions
 const getBodyLocations = (previousAnswers: {[key: number]: string | number}): string[] => {
   if (!previousAnswers[3] || typeof previousAnswers[3] !== 'string') return [];
-  return previousAnswers[3].split(',').map(location => location.trim()).filter(Boolean);
+  const parsed = parseBodySpecificFormat(previousAnswers[3] as string);
+  return parsed.map(p => p.location).filter(l => l !== 'General');
 };
 
 const getLocationAttributes = (previousAnswers: {[key: number]: string | number}) => {
@@ -33,14 +74,32 @@ const getLocationAttributes = (previousAnswers: {[key: number]: string | number}
   if (bodyLocations.length === 0) return [];
   
   return bodyLocations.map(location => {
-    // For each location, get its attributes from questions 4-8
+    // For each location, extract its specific attributes from questions 4-8
+    const shapeData = typeof previousAnswers[4] === 'string' ? 
+      parseBodySpecificFormat(previousAnswers[4]) : [];
+    const colorData = typeof previousAnswers[5] === 'string' ? 
+      parseBodySpecificFormat(previousAnswers[5]) : [];
+    const textureData = typeof previousAnswers[6] === 'string' ? 
+      parseBodySpecificFormat(previousAnswers[6]) : [];
+    const dimensionData = typeof previousAnswers[7] === 'string' ? 
+      parseBodySpecificFormat(previousAnswers[7]) : [];
+    const backgroundColorData = typeof previousAnswers[8] === 'string' ? 
+      parseBodySpecificFormat(previousAnswers[8]) : [];
+    
+    // Find attributes specific to this location
+    const shape = shapeData.find(d => d.location === location)?.description || '';
+    const color = colorData.find(d => d.location === location)?.description || '';
+    const texture = textureData.find(d => d.location === location)?.description || '';
+    const dimension = dimensionData.find(d => d.location === location)?.description || '';
+    const backgroundColor = backgroundColorData.find(d => d.location === location)?.description || '';
+    
     return {
       location,
-      shape: previousAnswers[4] && typeof previousAnswers[4] === 'string' ? previousAnswers[4] : '',
-      color: previousAnswers[5] && typeof previousAnswers[5] === 'string' ? previousAnswers[5] : '',
-      texture: previousAnswers[6] && typeof previousAnswers[6] === 'string' ? previousAnswers[6] : '',
-      dimension: previousAnswers[7] && typeof previousAnswers[7] === 'string' ? previousAnswers[7] : '',
-      backgroundColor: previousAnswers[8] && typeof previousAnswers[8] === 'string' ? previousAnswers[8] : ''
+      shape,
+      color,
+      texture,
+      dimension,
+      backgroundColor
     };
   });
 };
