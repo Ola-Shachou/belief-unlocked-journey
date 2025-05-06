@@ -10,6 +10,7 @@ import { EmotionSuggestions } from "./EmotionSuggestions";
 import { BodyLocationSuggestions } from "./BodyLocationSuggestions";
 import { TextureSuggestions } from "./TextureSuggestions";
 import { ShapeColorHint } from "./ShapeColorHint";
+import { emotionsList } from "@/data/questionnaireData";
 
 interface QuestionCardProps {
   question: Question;
@@ -43,6 +44,9 @@ export function QuestionCard({
     question.type === 'scale' ? 5 : ''
   );
   
+  // State to track if the current input appears to be an emotion
+  const [showEmotionHelp, setShowEmotionHelp] = useState<boolean>(false);
+  
   // Reset the answer field when question changes
   useEffect(() => {
     // Check if this question already has an answer
@@ -53,6 +57,16 @@ export function QuestionCard({
       setAnswer(question.type === 'scale' ? 5 : '');
     }
   }, [question.id, previousAnswers]);
+
+  // Effect to check if current input looks like an emotion when needed
+  useEffect(() => {
+    if (question.type === 'emotion' && typeof answer === 'string' && answer.trim() !== '') {
+      // Only show help if the answer doesn't seem like an emotion
+      setShowEmotionHelp(!mightBeEmotion(answer));
+    } else {
+      setShowEmotionHelp(false);
+    }
+  }, [answer, question.type]);
 
   // Handler for submitting the answer and moving to the next question
   const handleNext = () => {
@@ -67,6 +81,15 @@ export function QuestionCard({
 
   // Determine if the next button should be disabled
   const isNextDisabled = question.type !== 'scale' && (!answer || (typeof answer === 'string' && answer.trim() === ''));
+
+  // Helper function to determine if string might be an emotion
+  const mightBeEmotion = (input: string): boolean => {
+    const lowerInput = input.toLowerCase();
+    // Check if the input contains any common emotion-related terms
+    return emotionsList.some(emotion => 
+      lowerInput.includes(emotion.name.toLowerCase())
+    );
+  };
 
   // Handler for emotion suggestions
   const handleSuggestionClick = (suggestion: string) => {
@@ -90,19 +113,9 @@ export function QuestionCard({
     return previousAnswers[3].split(',').map(location => location.trim()).filter(Boolean);
   };
 
-  // Helper function to determine if string might be an emotion
-  const mightBeEmotion = (input: string): boolean => {
-    return false; // This is implemented in the EmotionSuggestions component
-  };
-
   // Render suggestions for certain question types
   const renderSuggestions = () => {
     if (question.type === 'emotion') {
-      // Check if current answer doesn't seem to be an emotion
-      const showEmotionHelp = typeof answer === 'string' && 
-                              answer.trim() !== '' && 
-                              !mightBeEmotion(answer);
-      
       return (
         <EmotionSuggestions 
           answer={answer as string}
