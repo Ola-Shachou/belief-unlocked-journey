@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { HeartIcon, SearchIcon, InfoIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -98,7 +97,7 @@ export function EmotionSuggestions({
   return (
     <div className="mt-4 space-y-4">
       {showEmotionHelp && (
-        <Alert variant="warning" className="bg-yellow-50 border-yellow-200">
+        <Alert className="bg-yellow-50 border-yellow-200">
           <InfoIcon className="h-4 w-4 text-yellow-800" />
           <AlertDescription className="text-yellow-700">
             <p className="font-medium text-yellow-800 mb-1">
