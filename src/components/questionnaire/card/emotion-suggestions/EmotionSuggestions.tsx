@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { HeartIcon } from "lucide-react";
 import { findEmotionsByPrefix, Emotion } from "@/data/questionnaireData";
 import { EmotionHelp } from "./EmotionHelp";
 import { EmotionSearchCommand } from "./EmotionSearchCommand";
