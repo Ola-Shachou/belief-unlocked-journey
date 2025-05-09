@@ -4,6 +4,7 @@
  */
 export function parseEmotions(input: string): string[] {
   if (typeof input !== 'string' || !input.trim()) return [];
+  // Split by commas and filter out empty items after trimming
   return input.split(',').map(e => e.trim()).filter(Boolean);
 }
 
@@ -16,21 +17,24 @@ export function addEmotionToList(
   bodyPart: string | null = null
 ): string {
   if (!newEmotion.trim()) return currentAnswer;
+  
+  const trimmedAnswer = currentAnswer.trim();
 
   // If there's a body part specified
   if (bodyPart) {
-    const colonIndex = currentAnswer.lastIndexOf(':');
+    const colonIndex = trimmedAnswer.indexOf(':');
     
     if (colonIndex !== -1) {
       // Check if there's already content after the colon
-      const afterColon = currentAnswer.substring(colonIndex + 1).trim();
+      const beforeColon = trimmedAnswer.substring(0, colonIndex).trim();
+      const afterColon = trimmedAnswer.substring(colonIndex + 1).trim();
       
       if (afterColon) {
         // Add to existing emotions for this body part
-        return `${currentAnswer}, ${newEmotion}`;
+        return `${beforeColon}: ${afterColon}, ${newEmotion}`;
       } else {
         // First emotion after colon
-        return `${currentAnswer} ${newEmotion}`;
+        return `${beforeColon}: ${newEmotion}`;
       }
     } else {
       // No colon yet, add one with the body part
@@ -38,10 +42,10 @@ export function addEmotionToList(
     }
   } else {
     // No body part, handle as simple comma-separated list
-    if (!currentAnswer || currentAnswer.trim() === '') {
+    if (!trimmedAnswer) {
       return newEmotion;
     } else {
-      return `${currentAnswer}, ${newEmotion}`;
+      return `${trimmedAnswer}, ${newEmotion}`;
     }
   }
 }
@@ -52,7 +56,7 @@ export function addEmotionToList(
 export function extractBodyPart(input: string): string | null {
   if (typeof input !== 'string') return null;
   
-  const colonIndex = input.lastIndexOf(':');
+  const colonIndex = input.indexOf(':');
   if (colonIndex !== -1) {
     return input.substring(0, colonIndex).trim();
   }

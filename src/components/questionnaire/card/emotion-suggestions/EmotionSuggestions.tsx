@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { findEmotionsByPrefix, Emotion } from "@/data/questionnaireData";
+import { findEmotionsByPrefix, Emotion } from "@/data";
 import { EmotionHelp } from "./EmotionHelp";
 import { EmotionSearchCommand } from "./EmotionSearchCommand";
 import { EmotionButtons } from "./EmotionButtons";
@@ -31,6 +31,11 @@ export function EmotionSuggestions({
   // Get the current emotions from answer
   const currentEmotions = parseEmotions(answer);
   
+  // Extract body part if there's a colon in the current answer
+  useEffect(() => {
+    setSelectedBody(extractBodyPart(answer));
+  }, [answer]);
+  
   // Toggle search interface
   const toggleSearch = () => {
     setIsSearching(prev => !prev);
@@ -39,13 +44,6 @@ export function EmotionSuggestions({
 
   // Handle emotion suggestion click with multiple emotion support
   const handleSuggestionClick = (emotion: Emotion) => {
-    // Extract body part if there's a colon in the current answer
-    let bodyPart = selectedBody;
-    
-    if (!bodyPart) {
-      bodyPart = extractBodyPart(answer);
-    }
-    
     // Check if the emotion is already selected
     const emotionName = emotion.name.trim();
     const isAlreadySelected = currentEmotions.some(
@@ -56,7 +54,7 @@ export function EmotionSuggestions({
     if (isAlreadySelected) return;
     
     // Add the emotion to the answer
-    const newAnswer = addEmotionToList(answer, emotion.name, bodyPart);
+    const newAnswer = addEmotionToList(answer, emotion.name, selectedBody);
     onSuggestionClick(newAnswer);
   };
 

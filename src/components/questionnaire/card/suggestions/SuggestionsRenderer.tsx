@@ -1,5 +1,5 @@
 
-import { Question } from "@/data/questionnaireData";
+import { Question } from "@/data";
 import { EmotionSuggestions } from "../emotion-suggestions";
 import { BodyLocationSuggestions } from "../BodyLocationSuggestions";
 import { TextureSuggestions } from "../TextureSuggestions";

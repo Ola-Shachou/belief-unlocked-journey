@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Question } from "@/data/questionnaireData";
+import { Question } from "@/data";
 import { mightBeEmotion } from "../utils/questionHelpers";
 
 interface UseAnswerManagerResult {
