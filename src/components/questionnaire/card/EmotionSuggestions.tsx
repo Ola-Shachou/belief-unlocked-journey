@@ -54,7 +54,7 @@ export function EmotionSuggestions({
     setSearchTerm("");
   };
 
-  // Handle emotion suggestion click with colon format
+  // Handle emotion suggestion click with multiple emotion support
   const handleSuggestionClick = (emotion: Emotion) => {
     // Extract body part if there's a colon in the current answer
     let bodyPart = selectedBody;
@@ -65,6 +65,16 @@ export function EmotionSuggestions({
         bodyPart = answer.substring(0, colonIndex).trim();
       }
     }
+    
+    // Check if the emotion is already in the current selection
+    const currentEmotionsList = getCurrentEmotions();
+    const emotionName = emotion.name.trim();
+    const emotionAlreadySelected = currentEmotionsList.some(
+      e => e.toLowerCase() === emotionName.toLowerCase()
+    );
+    
+    // Don't add duplicates
+    if (emotionAlreadySelected) return;
     
     if (bodyPart) {
       // Add emotion to the specific body part
@@ -89,8 +99,14 @@ export function EmotionSuggestions({
       
       onSuggestionClick(newAnswer);
     } else {
-      // Standard behavior (no body part specified)
-      onSuggestionClick(emotion.name);
+      // Handle multiple emotions in a comma-separated list
+      if (!answer || answer.trim() === '') {
+        // If empty, just add the emotion
+        onSuggestionClick(emotion.name);
+      } else {
+        // Otherwise, append with a comma
+        onSuggestionClick(`${answer}, ${emotion.name}`);
+      }
     }
   };
 
@@ -117,7 +133,7 @@ export function EmotionSuggestions({
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium text-muted-foreground flex items-center">
             <HeartIcon className="h-4 w-4 mr-2" />
-            Emotion suggestions:
+            Emotion suggestions: <span className="ml-1 text-xs text-muted-foreground">(click multiple to add)</span>
           </div>
           <Button 
             variant="ghost" 
@@ -142,7 +158,9 @@ export function EmotionSuggestions({
                 <CommandEmpty>No emotions found.</CommandEmpty>
                 <CommandGroup>
                   {filteredEmotions.map((emotion) => {
-                    const isSelected = currentEmotions.includes(emotion.name);
+                    const isSelected = currentEmotions.some(
+                      e => e.toLowerCase() === emotion.name.toLowerCase()
+                    );
                     return (
                       <CommandItem
                         key={emotion.name}
@@ -171,7 +189,9 @@ export function EmotionSuggestions({
         ) : (
           <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pb-2">
             {filteredEmotions.slice(0, 20).map((emotion) => {
-              const isSelected = currentEmotions.includes(emotion.name);
+              const isSelected = currentEmotions.some(
+                e => e.toLowerCase() === emotion.name.toLowerCase()
+              );
               return (
                 <TooltipProvider key={emotion.name}>
                   <Tooltip>
