@@ -1,5 +1,5 @@
 
-import { Question } from "@/data/questionnaireData";
+import { Question } from "@/data/types";
 import { CardTitle, CardDescription, CardHeader } from "@/components/ui/card";
 
 interface QuestionHeaderProps {

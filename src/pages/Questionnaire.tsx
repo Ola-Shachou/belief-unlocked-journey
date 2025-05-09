@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { questions, generateSummaryTitle } from "@/data/questionnaireData";
+import { questions, generateSummaryTitle } from "@/data";
 import { QuestionCard } from "@/components/questionnaire/QuestionCard";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/components/ui/sonner";
