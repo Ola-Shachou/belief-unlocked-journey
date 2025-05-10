@@ -1,6 +1,7 @@
 
 import { MapPinIcon } from "lucide-react";
-import { LocationAttributes } from "./LocationAttributes";
+import { AttributeBadge } from "./AttributeBadge";
+import { LayersIcon, DropletIcon, UserIcon } from "lucide-react";
 
 interface AttributeData {
   location: string;
@@ -25,7 +26,50 @@ export function LocationCard({ attribute }: LocationCardProps) {
             {attribute.location}
           </h5>
         </div>
-        <LocationAttributes attribute={attribute} />
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {/* Show pills for each attribute with hover details */}
+          {attribute.shape && (
+            <AttributeBadge 
+              label="Shape" 
+              value={attribute.shape}
+              icon={<LayersIcon className="h-3 w-3" />}
+            />
+          )}
+          {attribute.color && (
+            <AttributeBadge 
+              label="Color" 
+              value={attribute.color}
+              icon={<DropletIcon className="h-3 w-3" />}
+            />
+          )}
+          {attribute.texture && (
+            <AttributeBadge 
+              label="Texture" 
+              value={attribute.texture}
+              icon={<UserIcon className="h-3 w-3" />}
+            />
+          )}
+        </div>
+        
+        {/* Second row for additional attributes */}
+        {(attribute.dimension || attribute.backgroundColor) && (
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {attribute.dimension && (
+              <AttributeBadge 
+                label="Dimension" 
+                value={attribute.dimension}
+                icon={<LayersIcon className="h-3 w-3" />}
+              />
+            )}
+            {attribute.backgroundColor && (
+              <AttributeBadge 
+                label="Background" 
+                value={attribute.backgroundColor}
+                icon={<DropletIcon className="h-3 w-3" />}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

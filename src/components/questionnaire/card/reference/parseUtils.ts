@@ -1,5 +1,5 @@
 
-// Helper function to parse "body part: description" format
+// Helper function to parse "body part: description" format from text
 export const parseBodySpecificFormat = (text: string): { location: string, description: string }[] => {
   if (!text || typeof text !== 'string') return [];
   
@@ -20,6 +20,9 @@ export const parseBodySpecificFormat = (text: string): { location: string, descr
         
         if (location && description) {
           result.push({ location, description });
+        } else if (location) {
+          // Handle case where there's a location with no description yet
+          result.push({ location, description: '' });
         }
       } else if (line.trim()) {
         // Line without colon - treat as a general description
@@ -32,7 +35,7 @@ export const parseBodySpecificFormat = (text: string): { location: string, descr
       result.push({ location: 'General', description: text.trim() });
     }
   } else {
-    // Simple format - treat as general
+    // Simple format - treat as general description
     result.push({ location: 'General', description: text.trim() });
   }
   

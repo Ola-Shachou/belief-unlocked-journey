@@ -1,17 +1,16 @@
 
-import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { cn } from "@/lib/utils";
 
-interface AttributeBadgeProps {
-  label: string;
+interface AttributeBadgeProps { 
+  label: string; 
   value: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
 }
 
 export function AttributeBadge({ label, value, icon }: AttributeBadgeProps) {
