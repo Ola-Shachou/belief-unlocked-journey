@@ -1,5 +1,5 @@
 
-import { AlertCircleIcon, HeartIcon } from "lucide-react";
+import { AlertCircleIcon, HeartIcon, UserIcon } from "lucide-react";
 
 interface ReferenceSummaryProps {
   relevantPreviousQuestions: Array<{

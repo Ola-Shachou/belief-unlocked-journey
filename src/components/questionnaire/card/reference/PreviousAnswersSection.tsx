@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon, HeartIcon, UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LocationsPanel } from "./LocationsPanel";
 import { ReferenceSummary } from "./ReferenceSummary";

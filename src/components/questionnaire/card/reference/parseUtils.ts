@@ -1,4 +1,7 @@
 
+import { HeartIcon, UserIcon } from "lucide-react";
+import React from "react";
+
 // Helper function to parse "body part: description" format from text
 export const parseBodySpecificFormat = (text: string): { location: string, description: string }[] => {
   if (!text || typeof text !== 'string') return [];
@@ -110,7 +113,7 @@ export const getRelevantQuestions = (questionId: number, previousAnswers: {[key:
       id: 2,
       text: "Associated emotions:",
       answer: previousAnswers[2],
-      icon: '<HeartIcon className="h-3 w-3 mr-1" />'
+      icon: <HeartIcon className="h-3 w-3 mr-1" />
     });
   }
   
@@ -120,7 +123,7 @@ export const getRelevantQuestions = (questionId: number, previousAnswers: {[key:
       id: 3,
       text: "Body locations:",
       answer: previousAnswers[3],
-      icon: '<UserIcon className="h-3 w-3 mr-1" />'
+      icon: <UserIcon className="h-3 w-3 mr-1" />
     });
   }
   
