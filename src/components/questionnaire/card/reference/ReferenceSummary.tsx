@@ -6,7 +6,7 @@ interface ReferenceSummaryProps {
     id: number;
     text: string;
     answer: string | number;
-    icon?: React.ReactNode;
+    icon?: string;
   }>;
 }
 
@@ -17,7 +17,8 @@ export function ReferenceSummary({ relevantPreviousQuestions }: ReferenceSummary
         <div key={q.id} className="text-sm">
           <span className="font-medium flex items-center">
             {q.id === 1 && <AlertCircleIcon className="h-3 w-3 mr-1" />}
-            {q.icon || null}
+            {q.icon === 'HeartIcon' && <HeartIcon className="h-3 w-3 mr-1" />}
+            {q.icon === 'UserIcon' && <UserIcon className="h-3 w-3 mr-1" />}
             {q.text}
           </span>
           <p className="text-muted-foreground ml-4">{q.answer as string}</p>
