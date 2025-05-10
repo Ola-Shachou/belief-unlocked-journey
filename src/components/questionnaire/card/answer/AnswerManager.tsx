@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Question } from "@/data";
-import { mightBeEmotion, getBodyLocations } from "../utils/questionHelpers";
+import { mightBeEmotion, getBodyLocations, parseBodySpecificFormat } from "../utils/questionHelpers";
 
 interface UseAnswerManagerResult {
   answer: string | number;
@@ -52,6 +52,24 @@ export function useAnswerManager(
         if (bodyLocations.length > 0) {
           const formattedLocations = bodyLocations.map(location => `${location}:`).join('\n');
           setAnswer(formattedLocations);
+        }
+      }
+      
+      // Auto-populate question 5 with body locations and shapes from questions 3 and 4
+      if (question.id === 5 && previousAnswers[3] && previousAnswers[4]) {
+        const bodyLocations = getBodyLocations(previousAnswers);
+        const shapesData = typeof previousAnswers[4] === 'string' ? 
+          parseBodySpecificFormat(previousAnswers[4] as string) : [];
+          
+        if (bodyLocations.length > 0) {
+          // Create a formatted string with each body location and its shape, if available
+          const formattedLocationsWithShapes = bodyLocations.map(location => {
+            const shapeInfo = shapesData.find(item => item.location === location);
+            const shape = shapeInfo?.description || '';
+            return `${location}: ${shape ? shape + ':' : ''}`;
+          }).join('\n');
+          
+          setAnswer(formattedLocationsWithShapes);
         }
       }
     }

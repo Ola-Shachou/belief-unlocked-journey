@@ -1,3 +1,4 @@
+
 // Helper function to check if a text input might be an emotion
 export const mightBeEmotion = (text: string): boolean => {
   if (!text || typeof text !== 'string') return false;
@@ -30,7 +31,7 @@ export const mightBeEmotion = (text: string): boolean => {
 };
 
 // Parse "body part: description" format from text
-const parseBodySpecificFormat = (text: string): { location: string, description: string }[] => {
+export const parseBodySpecificFormat = (text: string): { location: string, description: string }[] => {
   if (!text || typeof text !== 'string') return [];
   
   // Split by commas outside of "location: description" pairs
@@ -50,6 +51,9 @@ const parseBodySpecificFormat = (text: string): { location: string, description:
         
         if (location && description) {
           result.push({ location, description });
+        } else if (location) {
+          // Handle case where there's a location with no description yet
+          result.push({ location, description: '' });
         }
       } else if (line.trim()) {
         // Line without colon - treat as a general description
