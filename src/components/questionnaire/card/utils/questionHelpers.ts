@@ -1,4 +1,3 @@
-
 // Helper function to check if a text input might be an emotion
 export const mightBeEmotion = (text: string): boolean => {
   if (!text || typeof text !== 'string') return false;
@@ -63,8 +62,16 @@ const parseBodySpecificFormat = (text: string): { location: string, description:
       result.push({ location: 'General', description: text.trim() });
     }
   } else {
-    // Simple format - treat as general
-    result.push({ location: 'General', description: text.trim() });
+    // Simple format - treat as general description
+    const parts = text.split(',').map(part => part.trim()).filter(Boolean);
+    if (parts.length > 0) {
+      // Each comma-separated value is treated as a separate body location
+      parts.forEach(part => {
+        result.push({ location: part, description: '' });
+      });
+    } else if (text.trim()) {
+      result.push({ location: text.trim(), description: '' });
+    }
   }
   
   return result;
@@ -73,8 +80,16 @@ const parseBodySpecificFormat = (text: string): { location: string, description:
 // Extract body locations from previous answers
 export const getBodyLocations = (previousAnswers: {[key: number]: string | number}): string[] => {
   if (!previousAnswers[3] || typeof previousAnswers[3] !== 'string') return [];
-  const parsed = parseBodySpecificFormat(previousAnswers[3] as string);
-  return parsed.map(p => p.location).filter(l => l !== 'General');
+  const locationText = previousAnswers[3] as string;
+  
+  // If the answer has colons, parse it as structured data
+  if (locationText.includes(':')) {
+    const parsed = parseBodySpecificFormat(locationText);
+    return parsed.map(p => p.location).filter(l => l !== 'General');
+  } else {
+    // Otherwise, treat comma-separated values as body locations
+    return locationText.split(',').map(loc => loc.trim()).filter(Boolean);
+  }
 };
 
 // Process question text with previous answers

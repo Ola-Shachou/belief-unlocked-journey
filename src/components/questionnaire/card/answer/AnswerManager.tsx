@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Question } from "@/data";
-import { mightBeEmotion } from "../utils/questionHelpers";
+import { mightBeEmotion, getBodyLocations } from "../utils/questionHelpers";
 
 interface UseAnswerManagerResult {
   answer: string | number;
@@ -45,6 +45,15 @@ export function useAnswerManager(
     } else {
       // Reset to default value if no previous answer
       setAnswer(question.type === 'scale' ? 5 : '');
+      
+      // Auto-populate question 4 with body locations from question 3
+      if (question.id === 4 && previousAnswers[3]) {
+        const bodyLocations = getBodyLocations(previousAnswers);
+        if (bodyLocations.length > 0) {
+          const formattedLocations = bodyLocations.map(location => `${location}:`).join('\n');
+          setAnswer(formattedLocations);
+        }
+      }
     }
   }, [question.id, previousAnswers]);
 
