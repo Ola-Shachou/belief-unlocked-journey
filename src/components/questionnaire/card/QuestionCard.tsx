@@ -65,6 +65,7 @@ export function QuestionCard({
           answer={answer}
           setAnswer={setAnswer}
           showFormatHint={showFormatHint}
+          previousAnswers={previousAnswers}
         />
 
         <SuggestionsRenderer 

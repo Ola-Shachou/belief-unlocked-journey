@@ -72,6 +72,30 @@ export function useAnswerManager(
           setAnswer(formattedLocationsWithShapes);
         }
       }
+      
+      // Auto-populate question 6 with body locations, shapes, and colors
+      if (question.id === 6 && previousAnswers[3] && previousAnswers[5]) {
+        const bodyLocations = getBodyLocations(previousAnswers);
+        const shapesData = typeof previousAnswers[4] === 'string' ? 
+          parseBodySpecificFormat(previousAnswers[4] as string) : [];
+        const colorsData = typeof previousAnswers[5] === 'string' ? 
+          parseBodySpecificFormat(previousAnswers[5] as string) : [];
+          
+        if (bodyLocations.length > 0) {
+          // Create a formatted string with each body location, its shape, and color
+          const formattedLocationsWithDetails = bodyLocations.map(location => {
+            const shapeInfo = shapesData.find(item => item.location === location);
+            const colorInfo = colorsData.find(item => item.location === location);
+            
+            const shape = shapeInfo?.description || '';
+            const color = colorInfo?.description || '';
+            
+            return `${location}: ${shape ? shape + ':' : ''}${color ? color + ':' : ''}`;
+          }).join('\n');
+          
+          setAnswer(formattedLocationsWithDetails);
+        }
+      }
     }
   }, [question.id, previousAnswers]);
 
@@ -88,9 +112,44 @@ export function useAnswerManager(
   // Determine if the next button should be disabled
   const isNextDisabled = question.type !== 'scale' && (!answer || (typeof answer === 'string' && answer.trim() === ''));
 
-  // Handler for emotion suggestions
+  // Handler for suggestion clicks
   const handleSuggestionClick = (suggestion: string) => {
-    setAnswer(suggestion);
+    if (question.id === 5 || question.id === 6) {
+      // For structured questions, we need to append to the active location
+      if (typeof answer === 'string') {
+        const lines = answer.split('\n');
+        // Find the active line - for now assume it's the last line that doesn't end with a complete value
+        let activeLineIndex = lines.length - 1;
+        
+        for (let i = 0; i < lines.length; i++) {
+          if (!lines[i].trim().endsWith(':')) {
+            activeLineIndex = i;
+            break;
+          }
+        }
+        
+        // For color (q5) and texture (q6), add to the end of the line
+        if (question.id === 5) {
+          // For color, we need to make sure we have a format with "location: shape:"
+          const parts = lines[activeLineIndex].split(':');
+          if (parts.length >= 2) {
+            // We have at least location: shape:
+            lines[activeLineIndex] = lines[activeLineIndex].trim() + ' ' + suggestion + ':';
+          } else {
+            // Just have location:
+            lines[activeLineIndex] = lines[activeLineIndex].trim() + ' ' + suggestion + ':';
+          }
+        } else if (question.id === 6) {
+          // For texture, add to the end of the format
+          lines[activeLineIndex] = lines[activeLineIndex].trim() + ' ' + suggestion;
+        }
+        
+        setAnswer(lines.join('\n'));
+      }
+    } else {
+      // For regular questions, just set the suggestion as the answer
+      setAnswer(suggestion);
+    }
   };
 
   // Handler for formatting input with body part: emotion format
