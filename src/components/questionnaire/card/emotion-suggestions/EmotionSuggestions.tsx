@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { findEmotionsByPrefix, getCommonEmotions, Emotion } from "@/data";
+import { findEmotionsByPrefix, getCommonEmotions, Emotion, emotionsList } from "@/data";
 import { EmotionHelp } from "./EmotionHelp";
 import { EmotionSearchCommand } from "./EmotionSearchCommand";
 import { EmotionButtons } from "./EmotionButtons";
@@ -97,7 +97,7 @@ export function EmotionSuggestions({
             currentEmotions={currentEmotions}
             onEmotionSelect={handleSuggestionClick}
             onShowMore={toggleSearch}
-            totalEmotions={emotionsList.length} // Show total available emotions
+            totalEmotions={emotionsList.length}
           />
         )}
       </div>
