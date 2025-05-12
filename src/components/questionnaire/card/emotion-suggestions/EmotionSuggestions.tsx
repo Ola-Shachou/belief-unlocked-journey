@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { findEmotionsByPrefix, Emotion } from "@/data";
+import { findEmotionsByPrefix, getCommonEmotions, Emotion } from "@/data";
 import { EmotionHelp } from "./EmotionHelp";
 import { EmotionSearchCommand } from "./EmotionSearchCommand";
 import { EmotionButtons } from "./EmotionButtons";
@@ -22,11 +22,21 @@ export function EmotionSuggestions({
   const [isSearching, setIsSearching] = useState(false);
   const [filteredEmotions, setFilteredEmotions] = useState<Emotion[]>([]);
   const [selectedBody, setSelectedBody] = useState<string | null>(null);
+  const [commonEmotions, setCommonEmotions] = useState<Emotion[]>([]);
   
+  // Initialize common emotions
+  useEffect(() => {
+    setCommonEmotions(getCommonEmotions(20));
+  }, []);
+
   // Update filtered emotions when search term changes
   useEffect(() => {
-    setFilteredEmotions(findEmotionsByPrefix(searchTerm, 15));
-  }, [searchTerm]);
+    if (isSearching) {
+      setFilteredEmotions(findEmotionsByPrefix(searchTerm, 30));
+    } else {
+      setFilteredEmotions(commonEmotions);
+    }
+  }, [searchTerm, isSearching, commonEmotions]);
   
   // Get the current emotions from answer
   const currentEmotions = parseEmotions(answer);
@@ -40,6 +50,11 @@ export function EmotionSuggestions({
   const toggleSearch = () => {
     setIsSearching(prev => !prev);
     setSearchTerm("");
+    
+    // When coming back from search, reset to common emotions
+    if (isSearching) {
+      setFilteredEmotions(commonEmotions);
+    }
   };
 
   // Handle emotion suggestion click with multiple emotion support
@@ -82,7 +97,7 @@ export function EmotionSuggestions({
             currentEmotions={currentEmotions}
             onEmotionSelect={handleSuggestionClick}
             onShowMore={toggleSearch}
-            totalEmotions={filteredEmotions.length}
+            totalEmotions={emotionsList.length} // Show total available emotions
           />
         )}
       </div>
