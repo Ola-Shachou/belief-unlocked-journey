@@ -32,8 +32,10 @@ export function EmotionSuggestions({
   // Update filtered emotions when search term changes
   useEffect(() => {
     if (isSearching) {
-      setFilteredEmotions(findEmotionsByPrefix(searchTerm, 30));
+      // When searching, show all emotions that match the search term
+      setFilteredEmotions(findEmotionsByPrefix(searchTerm, emotionsList.length));
     } else {
+      // When not searching, show common emotions
       setFilteredEmotions(commonEmotions);
     }
   }, [searchTerm, isSearching, commonEmotions]);
